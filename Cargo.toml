@@ -2,6 +2,12 @@
 name = "matops"
 version = "0.1.0"
 edition = "2018"
+license = "MIT"
+description = "Matrix Operations"
+homepage = "https://github.com/sarmadgulzar/matops"
+documentation = "https://github.com/sarmadgulzar/matops"
+repository = "https://github.com/sarmadgulzar/matops"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
