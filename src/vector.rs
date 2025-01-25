@@ -1,6 +1,8 @@
 use std::fmt::Debug;
 use std::fmt::Result;
 use std::ops::{Add, Mul};
+
+#[derive(Clone, Copy)]
 pub struct Vector<T, const N: usize> {
     pub data: [T; N],
 }

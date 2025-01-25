@@ -2,10 +2,19 @@ use std::fmt::Debug;
 use std::iter::Sum;
 use std::ops::{Add, Mul};
 
+use crate::vector::Vector;
+
+#[derive(Clone, Copy)]
 pub struct Matrix<T, const M: usize, const N: usize> {
     pub data: [[T; N]; M],
 }
 
+impl<T: Debug, const M: usize, const N: usize> Debug for Matrix<T, M, N> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Matrix").field("data", &self.data).finish()
+    }
+}
+// Matrix multiplication
 impl<T, const M: usize, const K: usize, const N: usize> Mul<Matrix<T, K, N>> for Matrix<T, M, K>
 where
     T: Mul<Output = T> + Add<Output = T> + Default + Copy + Sum,
@@ -22,6 +31,7 @@ where
     }
 }
 
+// Matrix transpose
 impl<T: Copy, const M: usize, const N: usize> Matrix<T, M, N> {
     pub fn transpose(&self) -> Matrix<T, N, M> {
         let mut data = [[self.data[0][0]; M]; N];
@@ -34,8 +44,18 @@ impl<T: Copy, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 }
 
-impl<T: Debug, const M: usize, const N: usize> Debug for Matrix<T, M, N> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Matrix").field("data", &self.data).finish()
+// Matrix-Vector multiplication
+impl<T, const M: usize, const K: usize> Mul<Vector<T, K>> for Matrix<T, M, K>
+where
+    T: Mul<Output = T> + Add<Output = T> + Default + Copy,
+{
+    type Output = Vector<T, M>;
+    fn mul(self, rhs: Vector<T, K>) -> Self::Output {
+        let mut data = [T::default(); M];
+        for (i, row) in self.data.iter().enumerate() {
+            let row_vector = Vector { data: *row };
+            data[i] = row_vector.dot(&rhs);
+        }
+        Vector { data }
     }
 }
