@@ -1,10 +1,17 @@
+use std::fmt::Debug;
+use std::fmt::Result;
 use std::ops::{Add, Mul};
-
-#[derive(Clone, Copy)]
 pub struct Vector<T, const N: usize> {
     pub data: [T; N],
 }
 
+impl<T: Debug, const N: usize> Debug for Vector<T, N> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result {
+        f.debug_struct("Vector").field("data", &self.data).finish()
+    }
+}
+
+// Vector addition
 impl<T: Add<Output = T> + Copy, const N: usize> Add for Vector<T, N> {
     type Output = Self;
     fn add(self, rhs: Self) -> Self::Output {
@@ -16,6 +23,7 @@ impl<T: Add<Output = T> + Copy, const N: usize> Add for Vector<T, N> {
     }
 }
 
+// Vector multiplication
 impl<T: Mul<Output = T> + Add<Output = T> + Default + Copy, const N: usize> Vector<T, N> {
     pub fn dot(&self, other: &Self) -> T {
         self.data
@@ -23,5 +31,17 @@ impl<T: Mul<Output = T> + Add<Output = T> + Default + Copy, const N: usize> Vect
             .zip(other.data.iter())
             .map(|(&a, &b)| a * b)
             .fold(T::default(), |acc, x| acc + x)
+    }
+}
+
+// Scalar multiplication
+impl<T: Mul<Output = T> + Copy, const N: usize> Mul<T> for Vector<T, N> {
+    type Output = Self;
+    fn mul(self, scalar: T) -> Self::Output {
+        let mut data = self.data;
+        for x in &mut data {
+            *x = *x * scalar;
+        }
+        Self { data }
     }
 }
