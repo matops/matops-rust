@@ -110,4 +110,56 @@ where
 
         det * sign
     }
+    pub fn identity() -> Self {
+        let mut data = [[T::default(); M]; M];
+        for i in 0..M {
+            data[i][i] = T::from(1);
+        }
+        Self { data }
+    }
+
+    pub fn inverse(&self) -> Option<Self> {
+        let mut mat = *self;
+        let mut inv = Self::identity();
+
+        for i in 0..M {
+            // Find pivot row
+            let mut pivot = i;
+            for j in i..M {
+                if mat.data[j][i] != T::default() {
+                    pivot = j;
+                    break;
+                }
+            }
+            if mat.data[pivot][i] == T::default() {
+                return None;
+            }
+
+            // Swap rows
+            if pivot != i {
+                mat.data.swap(i, pivot);
+                inv.data.swap(i, pivot);
+            }
+
+            // Normalize pivot row
+            let factor = T::from(1) / mat.data[i][i];
+            for k in 0..M {
+                mat.data[i][k] = mat.data[i][k] * factor;
+                inv.data[i][k] = inv.data[i][k] * factor;
+            }
+
+            // Eliminate other rows
+            for j in 0..M {
+                if j != i {
+                    let factor = mat.data[j][i];
+                    for k in 0..M {
+                        mat.data[j][k] = mat.data[j][k] - factor * mat.data[i][k];
+                        inv.data[j][k] = inv.data[j][k] - factor * inv.data[i][k];
+                    }
+                }
+            }
+        }
+
+        Some(inv)
+    }
 }
