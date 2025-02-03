@@ -1,3 +1,4 @@
+use std::array;
 use std::fmt::Debug;
 use std::fmt::Result;
 use std::ops::{Add, Mul, Sub};
@@ -17,11 +18,9 @@ impl<T: Debug, const N: usize> Debug for Vector<T, N> {
 impl<T: Add<Output = T> + Copy, const N: usize> Add for Vector<T, N> {
     type Output = Self;
     fn add(self, rhs: Self) -> Self::Output {
-        let mut data = self.data;
-        for (i, &x) in rhs.data.iter().enumerate() {
-            data[i] = data[i] + x;
+        Self {
+            data: array::from_fn(|i| self.data[i] + rhs.data[i]),
         }
-        Self { data }
     }
 }
 
@@ -29,11 +28,9 @@ impl<T: Add<Output = T> + Copy, const N: usize> Add for Vector<T, N> {
 impl<T: Sub<Output = T> + Copy, const N: usize> Sub for Vector<T, N> {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self::Output {
-        let mut data = self.data;
-        for (i, &x) in rhs.data.iter().enumerate() {
-            data[i] = data[i] - x;
+        Self {
+            data: array::from_fn(|i| self.data[i] - rhs.data[i]),
         }
-        Self { data }
     }
 }
 
@@ -52,11 +49,9 @@ impl<T: Mul<Output = T> + Add<Output = T> + Default + Copy, const N: usize> Vect
 impl<T: Mul<Output = T> + Copy, const N: usize> Mul<T> for Vector<T, N> {
     type Output = Self;
     fn mul(self, scalar: T) -> Self::Output {
-        let mut data = self.data;
-        for x in &mut data {
-            *x = *x * scalar;
+        Self {
+            data: array::from_fn(|i| self.data[i] * scalar),
         }
-        Self { data }
     }
 }
 
