@@ -1,7 +1,7 @@
 use std::array;
 use std::fmt;
 use std::fmt::Result;
-use std::ops::{Add, Mul, Sub};
+use std::ops::{Add, Div, Mul, Sub};
 
 #[derive(Clone, Copy)]
 pub struct Vector<T, const N: usize> {
@@ -64,5 +64,13 @@ impl<T: Copy + Into<f64>, const N: usize> Vector<T, N> {
                 acc + c * c
             })
             .sqrt()
+    }
+}
+
+impl<T: Copy + Add<Output = T> + Div<Output = T> + From<u8>, const N: usize> Vector<T, N> {
+    pub fn halfway(first: &Self, second: &Self) -> Self {
+        Self {
+            data: array::from_fn(|i| (first.data[i] + second.data[i]) / T::from(2)),
+        }
     }
 }
