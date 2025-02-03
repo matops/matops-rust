@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 use std::fmt::Result;
-use std::ops::{Add, Mul};
+use std::ops::{Add, Mul, Sub};
 
 #[derive(Clone, Copy)]
 pub struct Vector<T, const N: usize> {
@@ -20,6 +20,18 @@ impl<T: Add<Output = T> + Copy, const N: usize> Add for Vector<T, N> {
         let mut data = self.data;
         for (i, &x) in rhs.data.iter().enumerate() {
             data[i] = data[i] + x;
+        }
+        Self { data }
+    }
+}
+
+// Vector subtraction
+impl<T: Sub<Output = T> + Copy, const N: usize> Sub for Vector<T, N> {
+    type Output = Self;
+    fn sub(self, rhs: Self) -> Self::Output {
+        let mut data = self.data;
+        for (i, &x) in rhs.data.iter().enumerate() {
+            data[i] = data[i] - x;
         }
         Self { data }
     }
