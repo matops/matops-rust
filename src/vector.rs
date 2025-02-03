@@ -47,3 +47,15 @@ impl<T: Mul<Output = T> + Copy, const N: usize> Mul<T> for Vector<T, N> {
         Self { data }
     }
 }
+
+impl<T: Copy + Into<f64>, const N: usize> Vector<T, N> {
+    pub fn magnitude(&self) -> f64 {
+        self.data
+            .iter()
+            .fold(0.0, |acc, &component| {
+                let c: f64 = component.into();
+                acc + c * c
+            })
+            .sqrt()
+    }
+}
