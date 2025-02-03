@@ -1,5 +1,5 @@
 use std::array;
-use std::fmt::Debug;
+use std::fmt;
 use std::fmt::Result;
 use std::ops::{Add, Mul, Sub};
 
@@ -8,8 +8,8 @@ pub struct Vector<T, const N: usize> {
     pub data: [T; N],
 }
 
-impl<T: Debug, const N: usize> Debug for Vector<T, N> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result {
+impl<T: fmt::Debug, const N: usize> fmt::Debug for Vector<T, N> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result {
         f.debug_struct("Vector").field("data", &self.data).finish()
     }
 }
