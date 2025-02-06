@@ -1,6 +1,6 @@
 use std::array;
 use std::fmt;
-use std::fmt::{Debug, Display, Formatter};
+use std::fmt::{Debug, Display, Formatter, LowerExp};
 use std::ops::{Add, Div, Mul, Sub};
 
 #[derive(Clone, Copy)]
@@ -14,9 +14,59 @@ impl<T: Debug, const N: usize> Debug for Vector<T, N> {
     }
 }
 
-impl<T: Display + Debug, const N: usize> Display for Vector<T, N> {
+impl<T, const N: usize> Display for Vector<T, N>
+where
+    T: LowerExp + Display + PartialOrd + Copy + Into<f64>,
+{
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?}", self.data)
+        // How many significant digits we want.
+        let sig_digits = 3;
+        f.write_str("[")?;
+        for (i, &value) in self.data.iter().enumerate() {
+            if i > 0 {
+                f.write_str(", ")?;
+            }
+            let abs_val: f64 = value.into().abs();
+            if abs_val == 0.0 {
+                // For zero, we simply print 0.000 in fixed format.
+                write!(f, "{:.*}", sig_digits, 0.0)?
+            } else {
+                // Determine how many digits are printed before the decimal point
+                // for fixed formatting. For values less than 1, we treat that as 0.
+                let digits_before = if abs_val < 1.0 {
+                    0
+                } else {
+                    (abs_val.log10().floor() as i32 + 1) as usize
+                };
+
+                // Decide whether to use scientific notation.
+                // (Here we use scientific notation if the value is very small,
+                // very large, or has more than sig_digits digits before the decimal.)
+                if abs_val < 1e-3
+                    || abs_val >= 1e4
+                    || (abs_val >= 1.0 && digits_before > sig_digits)
+                {
+                    // Use scientific notation.
+                    // Using "{:.2e}" prints one digit before the decimal point and two after,
+                    // i.e. three significant digits.
+                    write!(f, "{:.2e}", value.into())?
+                } else {
+                    // Use fixed notation.
+                    // We choose the number of digits after the decimal so that the total
+                    // number of significant digits is (roughly) sig_digits.
+                    let decimal_places = if abs_val < 1.0 {
+                        // For numbers less than 1, we print sig_digits digits after the "0."
+                        sig_digits
+                    } else {
+                        // For numbers 1 or larger, the number of digits after the decimal
+                        // is sig_digits minus the number of digits before the decimal.
+                        sig_digits.saturating_sub(digits_before)
+                    };
+                    write!(f, "{:.*}", decimal_places, value.into())?
+                }
+            }
+        }
+        f.write_str("]")
     }
 }
 
