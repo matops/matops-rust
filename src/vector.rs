@@ -1,5 +1,6 @@
 use std::array;
 use std::fmt;
+use std::fmt::{Debug, Display, Formatter};
 use std::ops::{Add, Div, Mul, Sub};
 
 #[derive(Clone, Copy)]
@@ -7,9 +8,15 @@ pub struct Vector<T, const N: usize> {
     pub data: [T; N],
 }
 
-impl<T: fmt::Display + fmt::Debug, const N: usize> fmt::Display for Vector<T, N> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+impl<T: Debug, const N: usize> Debug for Vector<T, N> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         f.debug_struct("Vector").field("data", &self.data).finish()
+    }
+}
+
+impl<T: Display + Debug, const N: usize> Display for Vector<T, N> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self.data)
     }
 }
 
