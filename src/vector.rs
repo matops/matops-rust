@@ -1,6 +1,5 @@
 use std::array;
 use std::fmt;
-use std::fmt::Result;
 use std::ops::{Add, Div, Mul, Sub};
 
 #[derive(Clone, Copy)]
@@ -8,8 +7,8 @@ pub struct Vector<T, const N: usize> {
     pub data: [T; N],
 }
 
-impl<T: fmt::Debug, const N: usize> fmt::Debug for Vector<T, N> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result {
+impl<T: fmt::Display + fmt::Debug, const N: usize> fmt::Display for Vector<T, N> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Vector").field("data", &self.data).finish()
     }
 }
@@ -71,6 +70,24 @@ impl<T: Copy + Add<Output = T> + Div<Output = T> + From<u8>, const N: usize> Vec
     pub fn halfway(first: &Self, second: &Self) -> Self {
         Self {
             data: array::from_fn(|i| (first.data[i] + second.data[i]) / T::from(2)),
+        }
+    }
+}
+
+impl<T: Copy + Add<Output = T> + Mul<Output = T> + Sub<Output = T> + From<f64>> Vector<T, 2> {
+    pub fn rotate(&self, angle_degrees: f64) -> Self {
+        let angle_radians = angle_degrees.to_radians();
+        let cos = angle_radians.cos();
+        let sin = angle_radians.sin();
+
+        let x = self.data[0];
+        let y = self.data[1];
+
+        Self {
+            data: [
+                T::from(cos) * x - T::from(sin) * y,
+                T::from(sin) * x + T::from(cos) * y,
+            ],
         }
     }
 }
