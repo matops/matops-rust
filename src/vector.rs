@@ -3,7 +3,7 @@ use std::fmt;
 use std::fmt::{Debug, Display, Formatter, LowerExp};
 use std::ops::{Add, Div, Mul, Sub};
 
-#[derive(Clone, Copy)]
+#[derive(Copy, Clone, PartialEq)]
 pub struct Vector<T, const N: usize> {
     pub data: [T; N],
 }

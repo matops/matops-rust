@@ -4,7 +4,7 @@ use std::ops::{Add, Div, Mul, Neg, Sub};
 
 use crate::vector::Vector;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub struct Matrix<T, const M: usize, const N: usize> {
     pub data: [[T; N]; M],
 }
@@ -14,6 +14,7 @@ impl<T: Debug, const M: usize, const N: usize> Debug for Matrix<T, M, N> {
         f.debug_struct("Matrix").field("data", &self.data).finish()
     }
 }
+
 // Matrix multiplication
 impl<T, const M: usize, const K: usize, const N: usize> Mul<Matrix<T, K, N>> for Matrix<T, M, K>
 where
