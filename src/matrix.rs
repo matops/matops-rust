@@ -61,35 +61,95 @@ where
     }
 }
 
-impl<T, const M: usize> Matrix<T, M, M>
+// Matrix Addition
+impl<T, const M: usize, const N: usize> Add<Matrix<T, M, N>> for Matrix<T, M, N>
 where
-    T: Copy
-        + Default
-        + PartialEq
-        + Mul<Output = T>
-        + Add<Output = T>
-        + Sub<Output = T>
-        + Neg<Output = T>
-        + From<i32>
-        + Div<Output = T>,
+    T: Add<Output = T> + Copy,
 {
-    pub fn determinant(&self) -> T {
+    type Output = Self;
+    fn add(self, rhs: Matrix<T, M, N>) -> Self::Output {
+        let mut result = self.data;
+        for i in 0..M {
+            for j in 0..N {
+                result[i][j] = self.data[i][j] + rhs.data[i][j];
+            }
+        }
+        Matrix { data: result }
+    }
+}
+
+// Matrix Subtraction
+impl<T, const M: usize, const N: usize> Sub<Matrix<T, M, N>> for Matrix<T, M, N>
+where
+    T: Sub<Output = T> + Copy,
+{
+    type Output = Self;
+    fn sub(self, rhs: Matrix<T, M, N>) -> Self::Output {
+        let mut result = self.data;
+        for i in 0..M {
+            for j in 0..N {
+                result[i][j] = self.data[i][j] - rhs.data[i][j];
+            }
+        }
+        Matrix { data: result }
+    }
+}
+
+// Scalar Multiplication (Matrix * Scalar)
+impl<T, const M: usize, const N: usize> Mul<T> for Matrix<T, M, N>
+where
+    T: Mul<Output = T> + Copy,
+{
+    type Output = Self;
+    fn mul(self, scalar: T) -> Self::Output {
+        let mut result = self.data;
+        for i in 0..M {
+            for j in 0..N {
+                result[i][j] = self.data[i][j] * scalar;
+            }
+        }
+        Matrix { data: result }
+    }
+}
+
+// Scalar Division (Matrix / Scalar)
+impl<T, const M: usize, const N: usize> Div<T> for Matrix<T, M, N>
+where
+    T: Div<Output = T> + Copy,
+{
+    type Output = Self;
+    fn div(self, scalar: T) -> Self::Output {
+        let mut result = self.data;
+        for i in 0..M {
+            for j in 0..N {
+                result[i][j] = self.data[i][j] / scalar;
+            }
+        }
+        Matrix { data: result }
+    }
+}
+
+// Only implement determinant, inverse, identity for f64 square matrices
+impl<const M: usize> Matrix<f64, M, M> {
+    pub fn determinant(&self) -> f64 {
         let mut mat = *self;
-        let mut det = T::from(1);
-        let mut sign = T::from(1);
+        let mut det = 1.0;
+        let mut sign = 1.0;
 
         for i in 0..M {
             // Find pivot row
             let mut pivot = i;
             for j in i..M {
-                if mat.data[j][i] != T::default() {
+                // Use a small tolerance for float comparison
+                if (mat.data[j][i]).abs() > 1e-9 {
                     pivot = j;
                     break;
                 }
             }
 
-            if mat.data[pivot][i] == T::default() {
-                return T::default();
+            // Check if pivot is effectively zero
+            if (mat.data[pivot][i]).abs() <= 1e-9 {
+                return 0.0; // Matrix is singular
             }
 
             // Swap rows if needed
@@ -112,9 +172,9 @@ where
         det * sign
     }
     pub fn identity() -> Self {
-        let mut data = [[T::default(); M]; M];
+        let mut data = [[0.0; M]; M];
         for i in 0..M {
-            data[i][i] = T::from(1);
+            data[i][i] = 1.0;
         }
         Self { data }
     }
@@ -127,13 +187,15 @@ where
             // Find pivot row
             let mut pivot = i;
             for j in i..M {
-                if mat.data[j][i] != T::default() {
+                // Use a small tolerance for float comparison
+                if (mat.data[j][i]).abs() > 1e-9 {
                     pivot = j;
                     break;
                 }
             }
-            if mat.data[pivot][i] == T::default() {
-                return None;
+            // Check if pivot is effectively zero
+            if (mat.data[pivot][i]).abs() <= 1e-9 {
+                return None; // Matrix is singular
             }
 
             // Swap rows
@@ -143,7 +205,7 @@ where
             }
 
             // Normalize pivot row
-            let factor = T::from(1) / mat.data[i][i];
+            let factor = 1.0 / mat.data[i][i];
             for k in 0..M {
                 mat.data[i][k] = mat.data[i][k] * factor;
                 inv.data[i][k] = inv.data[i][k] * factor;
