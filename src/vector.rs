@@ -8,6 +8,13 @@ pub struct Vector<T, const N: usize> {
     pub data: [T; N],
 }
 
+impl<T, const N: usize> Vector<T, N> {
+    /// Creates a new vector from the given data array.
+    pub fn new(data: [T; N]) -> Self {
+        Self { data }
+    }
+}
+
 impl<T: Debug, const N: usize> Debug for Vector<T, N> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         f.debug_struct("Vector").field("data", &self.data).finish()
