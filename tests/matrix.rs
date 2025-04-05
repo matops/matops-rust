@@ -36,3 +36,22 @@ fn test_product_of_diagonal_matrices() {
         }
     )
 }
+
+#[test]
+fn test_transpose_of_product() {
+    let a = Matrix {
+        data: [[1, 2], [3, 4]],
+    };
+    let b = Matrix {
+        data: [[5, 6], [7, 8]],
+    };
+
+    let ab = a * b;
+    let ab_t = ab.transpose();
+
+    let a_t = a.transpose();
+    let b_t = b.transpose();
+    let b_t_a_t = b_t * a_t;
+
+    assert_eq!(ab_t, b_t_a_t);
+}
