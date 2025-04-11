@@ -11,7 +11,7 @@ where
         let mut result = Self::zeros();
         for i in 0..M {
             for j in 0..N {
-                result[(i, j)] = self[(i, j)] + rhs[(i, j)];
+                result[i][j] = self[i][j] + rhs[i][j];
             }
         }
         result
@@ -27,7 +27,7 @@ where
         let mut result = Self::zeros();
         for i in 0..M {
             for j in 0..N {
-                result[(i, j)] = self[(i, j)] - rhs[(i, j)];
+                result[i][j] = self[i][j] - rhs[i][j];
             }
         }
         result
@@ -43,7 +43,7 @@ where
         let mut result = Self::zeros();
         for i in 0..M {
             for j in 0..N {
-                result[(i, j)] = self[(i, j)] * scalar;
+                result[i][j] = self[i][j] * scalar;
             }
         }
         result
@@ -59,7 +59,7 @@ where
         let mut result = Self::zeros();
         for i in 0..M {
             for j in 0..N {
-                result[(i, j)] = self[(i, j)] / scalar;
+                result[i][j] = self[i][j] / scalar;
             }
         }
         result
@@ -75,7 +75,7 @@ where
         let mut result = Self::Output::zeros();
         for i in 0..M {
             for j in 0..N {
-                result[(i, j)] = (0..K).map(|k| self[(i, k)] * rhs[(k, j)]).sum();
+                result[i][j] = (0..K).map(|k| self[i][k] * rhs[k][j]).sum();
             }
         }
         result
@@ -90,7 +90,7 @@ where
     fn mul(self, rhs: Vector<T, K>) -> Self::Output {
         let mut result_data = [T::default(); M];
         for i in 0..M {
-            result_data[i] = (0..K).map(|k| self[(i, k)] * rhs.data[k]).sum();
+            result_data[i] = (0..K).map(|k| self[i][k] * rhs.data[k]).sum();
         }
         Vector { data: result_data }
     }

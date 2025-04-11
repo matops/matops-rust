@@ -15,13 +15,13 @@ pub fn assert_matrix_approx_eq<const M: usize, const N: usize>(
     for i in 0..M {
         for j in 0..N {
             assert!(
-                (a[(i, j)] - b[(i, j)]).abs() < tolerance,
+                (a[i][j] - b[i][j]).abs() < tolerance,
                 "Matrices differ at [{}][{}]: {} != {} (difference: {})",
                 i,
                 j,
-                a[(i, j)],
-                b[(i, j)],
-                (a[(i, j)] - b[(i, j)]).abs()
+                a[i][j],
+                b[i][j],
+                (a[i][j] - b[i][j]).abs()
             );
         }
     }

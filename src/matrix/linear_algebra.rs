@@ -23,24 +23,24 @@ impl<const M: usize> Matrix<f64, M, M> {
         for i in 0..M {
             let mut pivot = i;
             for j in i..M {
-                if mat[(j, i)].abs() > 1e-9 {
+                if mat[j][i].abs() > 1e-9 {
                     pivot = j;
                     break;
                 }
             }
-            if mat[(pivot, i)].abs() <= 1e-9 {
+            if mat[pivot][i].abs() <= 1e-9 {
                 return 0.0;
             }
             if pivot != i {
                 mat.data.swap(i, pivot);
                 sign = -sign;
             }
-            let pivot_val = mat[(i, i)];
+            let pivot_val = mat[i][i];
             for j in (i + 1)..M {
-                let factor = mat[(j, i)] / pivot_val;
+                let factor = mat[j][i] / pivot_val;
                 for k in i..M {
-                    let val_ik = mat[(i, k)];
-                    mat[(j, k)] -= factor * val_ik;
+                    let val_ik = mat[i][k];
+                    mat[j][k] -= factor * val_ik;
                 }
             }
             det *= pivot_val;
@@ -51,7 +51,7 @@ impl<const M: usize> Matrix<f64, M, M> {
     pub fn identity() -> Self {
         let mut result = Self::zeros();
         for i in 0..M {
-            result[(i, i)] = 1.0;
+            result[i][i] = 1.0;
         }
         result
     }
@@ -62,32 +62,32 @@ impl<const M: usize> Matrix<f64, M, M> {
         for i in 0..M {
             let mut pivot = i;
             for j in i..M {
-                if mat[(j, i)].abs() > 1e-9 {
+                if mat[j][i].abs() > 1e-9 {
                     pivot = j;
                     break;
                 }
             }
-            if mat[(pivot, i)].abs() <= 1e-9 {
+            if mat[pivot][i].abs() <= 1e-9 {
                 return None;
             }
             if pivot != i {
                 mat.data.swap(i, pivot);
                 inv.data.swap(i, pivot);
             }
-            let pivot_val = mat[(i, i)];
+            let pivot_val = mat[i][i];
             let factor = 1.0 / pivot_val;
             for k in 0..M {
-                mat[(i, k)] *= factor;
-                inv[(i, k)] *= factor;
+                mat[i][k] *= factor;
+                inv[i][k] *= factor;
             }
             for j in 0..M {
                 if j != i {
-                    let factor = mat[(j, i)];
+                    let factor = mat[j][i];
                     for k in 0..M {
-                        let val_ik_mat = mat[(i, k)];
-                        let val_ik_inv = inv[(i, k)];
-                        mat[(j, k)] -= factor * val_ik_mat;
-                        inv[(j, k)] -= factor * val_ik_inv;
+                        let val_ik_mat = mat[i][k];
+                        let val_ik_inv = inv[i][k];
+                        mat[j][k] -= factor * val_ik_mat;
+                        inv[j][k] -= factor * val_ik_inv;
                     }
                 }
             }

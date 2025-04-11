@@ -10,7 +10,6 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
 }
 
 impl<T: Default + Copy, const M: usize, const N: usize> Matrix<T, M, N> {
-    /// Creates a matrix filled with zeros (default values).
     pub fn zeros() -> Self {
         Self {
             data: [[T::default(); N]; M],
