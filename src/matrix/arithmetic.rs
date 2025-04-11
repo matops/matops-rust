@@ -1,6 +1,6 @@
 use super::core::Matrix;
 use crate::vector::Vector;
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use core::ops::{Add, Div, Mul, Neg, Sub};
 
 impl<T, const M: usize, const N: usize> Add<Matrix<T, M, N>> for Matrix<T, M, N>
 where
@@ -68,7 +68,7 @@ where
 
 impl<T, const M: usize, const K: usize, const N: usize> Mul<Matrix<T, K, N>> for Matrix<T, M, K>
 where
-    T: Mul<Output = T> + Add<Output = T> + Default + Copy + std::iter::Sum,
+    T: Mul<Output = T> + Add<Output = T> + Default + Copy + core::iter::Sum,
 {
     type Output = Matrix<T, M, N>;
     fn mul(self, rhs: Matrix<T, K, N>) -> Self::Output {
@@ -84,7 +84,7 @@ where
 
 impl<T, const M: usize, const K: usize> Mul<Vector<T, K>> for Matrix<T, M, K>
 where
-    T: Mul<Output = T> + Add<Output = T> + Default + Copy + std::iter::Sum,
+    T: Mul<Output = T> + Add<Output = T> + Default + Copy + core::iter::Sum,
 {
     type Output = Vector<T, M>;
     fn mul(self, rhs: Vector<T, K>) -> Self::Output {

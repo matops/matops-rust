@@ -4,7 +4,6 @@ pub struct Matrix<T, const M: usize, const N: usize> {
 }
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
-    /// Creates a new matrix from the given 2D data array.
     pub fn new(data: [[T; N]; M]) -> Self {
         Self { data }
     }

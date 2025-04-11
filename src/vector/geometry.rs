@@ -1,6 +1,6 @@
 use super::core::Vector;
-use std::array;
-use std::ops::{Add, Div, Mul, Sub};
+use core::array;
+use core::ops::{Add, Div, Mul, Sub};
 
 impl<T: Copy + Into<f64>, const N: usize> Vector<T, N> {
     pub fn magnitude(&self) -> f64 {

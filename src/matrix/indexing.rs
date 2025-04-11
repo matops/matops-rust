@@ -1,5 +1,5 @@
 use super::core::Matrix;
-use std::ops::{Index, IndexMut};
+use core::ops::{Index, IndexMut};
 
 impl<T, const M: usize, const N: usize> Index<(usize, usize)> for Matrix<T, M, N> {
     type Output = T;

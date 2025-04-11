@@ -1,6 +1,6 @@
 use super::core::Vector;
-use std::fmt;
-use std::fmt::{Debug, Display, Formatter, LowerExp};
+use core::fmt;
+use core::fmt::{Debug, Display, Formatter, LowerExp};
 
 impl<T: Debug, const N: usize> Debug for Vector<T, N> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {

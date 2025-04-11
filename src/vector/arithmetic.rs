@@ -1,6 +1,6 @@
 use super::core::Vector;
-use std::array;
-use std::ops::{Add, Mul, Sub};
+use core::array;
+use core::ops::{Add, Mul, Sub};
 
 impl<T: Add<Output = T> + Copy, const N: usize> Add for Vector<T, N> {
     type Output = Self;
